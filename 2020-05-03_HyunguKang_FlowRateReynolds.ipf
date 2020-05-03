@@ -7,9 +7,6 @@
 //	Source of kinematic viscosity:
 //	https://www.me.psu.edu/cimbala/me433/Links/Table_A_9_CC_Properties_of_Air.pdf
 
-//	Gas monitor inlet installed at KIST 2020/04/30. 3/8" OD, 1/4" ID, 5 m length.
-//	1/4" ID = 0.00635 m
-//	inlet length = 5 m
 Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 	Variable v_diameter_m, v_length_m, v_maxFlowRate_lpm
 
