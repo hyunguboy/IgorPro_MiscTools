@@ -1,6 +1,6 @@
 #pragma rtGlobals=3		// Use modern global access method and strict wave access.
 
-//	Flow rate: m3 s-1
+//	Flow rate: L min-1
 //	Length: length of tubing (m)
 //	Diameter: inner diameter of tubing (m)
 
