@@ -3,6 +3,13 @@
 
 //	2020 Hyungu Kang, www.hazykinetics.com, hyunguboy@gmail.com
 //
+//	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
+//
+//	Version 1.3 (Released 2020-05-18)
+//	1.	Changed print output in case there are no recommended flow rates.
+//	2.	Fixed bug where flow rate range on x-axis did not match the maximum
+//		flow rate input.
+//
 //	Version 1.2 (Released 2020-05-14)
 //	1.	Prints recommended flow rate range. See description for the conditions.
 //
@@ -32,10 +39,6 @@
 //
 //	Source of kinematic and dynamic viscosities (1 atm):
 //	https://www.me.psu.edu/cimbala/me433/Links/Table_A_9_CC_Properties_of_Air.pdf
-//
-//	Gas monitor inlet installed at KIST, 2020/04/30. 3/8" OD, 1/4" ID, 5 m length.
-//	1/4" ID = 0.00635 m
-//	inlet length = 5 m
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -76,7 +79,7 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 
 	// Calculate with flow rate on the x-axis.
 	For(iloop = 0; iloop < v_numpnts; iloop += 1)
-		w_flowRate_lpm[iloop] = iloop * v_maxFlowRate_lpm/100
+		w_flowRate_lpm[iloop] = iloop * v_maxFlowRate_lpm/v_numpnts
 
 		v_flowRate_m3ps = w_flowRate_lpm[iloop] * 1/1000 * 1/60
 
@@ -95,7 +98,11 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 		EndIf
 	EndFor
 	
-	Print "Recommended flow rate: ", wavemin(w_flowRate_recommended), " to ", wavemax(w_flowRate_recommended), "L/min"
+	If(numpnts(w_flowRate_recommended) > 1)
+		Print "Recommended flow rate: ", wavemin(w_flowRate_recommended), " to ", wavemax(w_flowRate_recommended), "L/min"
+	Else
+		Print "No suitable flow rate range found. Consider changing tubing diameter or length."
+	EndIf
 
 	// Display figure.
 	Display/K=1 w_Reynolds vs w_flowRate_lpm; DelayUpdate
