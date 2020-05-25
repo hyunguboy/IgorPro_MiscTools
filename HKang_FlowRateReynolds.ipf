@@ -1,9 +1,13 @@
 #pragma rtGlobals=3		// Use modern global access method and strict wave access.
-#pragma version = 1.3
+#pragma version = 1.4
 
 //	2020 Hyungu Kang, www.hazykinetics.com, hyunguboy@gmail.com
 //
 //	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
+//
+//	Version 1.4 (Released 2020-05-25)
+//	1.	Added text box with recommended flow rates into the generated figure.
+//	2.	Minor code formatting changes.
 //
 //	Version 1.3 (Released 2020-05-18)
 //	1.	Changed print output in case there are no recommended flow rates.
@@ -24,7 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //	The function calculates the Reynolds number, residence time, and pressure
-//	differential at the ends of the inlet. The function also prints a range
+//	differential between the ends of the inlet. The function also prints a range
 //	of flow rates that meets the following conditions:
 //		1.	Re < 2100
 //		2.	Residence time < 10 s
@@ -37,8 +41,20 @@
 //	Reynolds = (flow rate * diameter)/(kinematic viscosity * area)
 //	Pressure differential = (8 * dynamic viscosity * length * flow rate)/(Pi * radius^4)
 //
+//	Note that the Hagen-Poiseuille equation is valid under specific conditions.
+//	In the transition/turbulent flow regime, the pressure differential
+//	calculation is not valid. Please check specifics prior to using this
+//	function.
+//
+//	https://www.tec-science.com/mechanics/gases-and-liquids/hagen-poiseuille-equation-for-pipe-flows-with-friction/
+//
 //	Source of kinematic and dynamic viscosities (1 atm):
 //	https://www.me.psu.edu/cimbala/me433/Links/Table_A_9_CC_Properties_of_Air.pdf
+//
+//	1/8" = 0.00318 m		5/8" = 0.01588 m
+//	1/4" = 0.00635 m		3/4" = 0.01905 m
+//	3/8" = 0.00953 m		7/8" = 0.02223 m
+//	1/2" = 0.01270 m		1"   = 0.02540 m
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -55,6 +71,7 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 	Variable v_flowRate_m3ps
 	Variable v_numpnts = 201 // Number of flow rate points.
 	Variable iloop
+	String/G str_flowMin, str_flowMax
 
 	v_nu = 1.562e-5 // kinematic viscosity of air at 25 C (m2 s-1)
 	v_mu = 1.849e-5 // dynamic viscosity of air at 25 C (kg m-1 s-1)
@@ -73,7 +90,7 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 
 	// Wave of pressure differentials per flow rate.
 	Make/O/D/N=(v_numpnts) w_pressureDiff_torr
-	
+
 	// Wave of flow rates recommended for use.
 	Make/O/D/N=0 w_flowRate_recommended
 
@@ -86,7 +103,7 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 		w_Reynolds[iloop] = (v_flowRate_m3ps * v_diameter_m)/(v_nu * v_area_m2)
 
 		w_residenceTime_s[iloop] = v_tubeVolume_m3/v_flowRate_m3ps
-		
+
 		w_pressureDiff_torr[iloop] = (8 * v_mu * v_length_m * v_flowRate_m3ps)/(Pi * (v_diameter_m/2)^4) * 0.0075
 	EndFor
 
@@ -94,12 +111,16 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 	For(iloop = 0; iloop < v_numpnts; iloop += 1)
 		If(w_residenceTime_s[iloop] < 10 && w_Reynolds[iloop] < 2100 && w_pressureDiff_torr[iloop] < 2)
 			InsertPoints/M=0 numpnts(w_flowRate_recommended), 1, w_flowRate_recommended
+
 			w_flowRate_recommended[numpnts(w_flowRate_recommended) - 1] = w_flowRate_lpm[iloop]
 		EndIf
 	EndFor
-	
+
+	str_flowMin = num2str(wavemin(w_flowRate_recommended))
+	str_flowMax = num2str(wavemax(w_flowRate_recommended))
+
 	If(numpnts(w_flowRate_recommended) > 1)
-		Print "Recommended flow rate: ", wavemin(w_flowRate_recommended), " to ", wavemax(w_flowRate_recommended), "L/min"
+		Print "Recommended flow rate: " + str_flowMin + " to " + str_flowMax + " L/min"
 	Else
 		Print "No suitable flow rate range found. Consider changing tubing diameter or length."
 	EndIf
@@ -123,5 +144,11 @@ Function FlowRateGraph(v_diameter_m, v_length_m, v_maxFlowRate_lpm)
 	SetAxis right 0,20; DelayUpdate
 	SetAxis PressureDiff 0,(ceil(1.5*wavemax(w_pressureDiff_torr))); DelayUpdate
 	Legend/C/N=text0/A=MC; DelayUpdate
+
+	If(numpnts(w_flowRate_recommended) > 1)
+		TextBox/C/N=text1/A=MC "Recommended: " + str_flowMin + " to " + str_flowMax + " L/min"
+	Else
+		TextBox/C/N=text1/A=MC "No suitable flow rate range found. Consider changing tubing diameter or length."
+	EndIf
 
 End
