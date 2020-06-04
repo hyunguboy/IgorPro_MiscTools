@@ -1,8 +1,10 @@
 # IgorPro_MiscTools
 Miscellaneous tools used in the lab.
 
-## HKang_FlowRateReynolds.ipf
+## HKang_ConvertToNaNperiod.ipf
 
-Calculates the Reynolds number, residence time, and pressure differential of round tubing at a given flow rate. The function will generate a figure, such as shown below.
+Takes time and concentration waves and designated times and converts the concentrations within those designated times to NaN.
 
-![FlowRateReynolds](https://github.com/hyunguboy/IgorPro_MiscTools/blob/master/FlowRateReynolds.png)
+## HKang_GetMultipleR2.ipf
+
+Finds the R2 from linear regressions of multiple waves (or matrix) and saves those R2 values into an output wave.
