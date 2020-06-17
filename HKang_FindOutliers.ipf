@@ -3,32 +3,55 @@
 
 //	2020 Hyungu Kang, www.hazykinetics.com, hyunguboy@gmail.com
 //
-//	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
+//	Version 1.1 (Released 2020-06-18)
+//	1.	Changed code formatting to be more consistent. Added comments.
+//	2.	Master function designates data folder for better organization.
 //
 //	Version 1.0 (Released 2020-06-10)
 //	1.	Initial release tested with Igor Pro 6.37 and 8.04.
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//	Statistically unverified method of identifying outliers in a time series.
-//	Use at your own risk.
+//	Statistical method of identifying outliers in a time series using Cook's.
+//	Distance (CooksD). A quick reference can be found in the link below.
+//
+//	https://tinyurl.com/y9vhzm3s
+//
+//	The criteria for what is considered an outlier may too strigent, resulting
+//	in over identification. This criteria needs to be changed in the code of
+//	'HKang_GetOutliers'.
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Function HKang_MasterOutliersRun(w_conc, w_time)
+//	Main function that runs the subroutines.
+Function HKang_FindOutliersMain(w_conc, w_time)
 	Wave w_conc, w_time
-	
-	HKang_FindOutliersCooksD(w_conc, w_time)
-	
+
+	DFREF dfr_current
+
+	dfr_current = GetDataFolderDFR()
+
+	// Set the data folder for better organization.
+	If(DataFolderExists("root:FindOutliers"))
+		SetDataFolder root:FindOutliers
+	Else
+		NewDataFolder/O/S root:FindOutliers
+	EndIf
+
+	// Run subroutines.
+	HKang_CalculateCooksD(w_conc, w_time)
+
 	HKang_GetOutliers(w_conc, w_time)
-	
+
 	HKang_DisplayOutliers(w_conc, w_time)
+
+	SetDataFolder dfr_current
 
 End
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Function HKang_FindOutliersCooksD(w_conc, w_time)
+Function HKang_CalculateCooksD(w_conc, w_time)
 	Wave w_conc, w_time
 
 	Variable v_MSE // Mean squared error
@@ -37,7 +60,8 @@ Function HKang_FindOutliersCooksD(w_conc, w_time)
 	Variable iloop, jloop
 	Variable v_starttime, v_endtime
 
-	Print "Starting at: " + time()
+	// Timer for code improvements.
+	Print "Started calculation at: " + time()
 	v_starttime = startMSTimer
 
 	// Make the Y and X axis waves.
@@ -78,7 +102,7 @@ Function HKang_FindOutliersCooksD(w_conc, w_time)
 
 	v_MSE = V_sum/(V_npnts - V_numNans)
 
-	// Calculate Cook's Distance.
+	// Calculate Cook's Distance for each point.
 	For(iloop = 0; iloop < numpnts(w_RegY); iloop += 1)
 		Duplicate/O w_RegY, w_RegYPntRmvd
 		Duplicate/O w_RegX, w_RegXPntRmvd
@@ -110,6 +134,9 @@ Function HKang_GetOutliers(w_conc, w_time)
 	Wave w_conc, w_time
 
 	Wave w_RegY, w_RegX, w_CooksD
+	Variable v_npntsRemoved = 0
+	Variable/G v_CooksDLimit
+	Variable iloop
 
 	Duplicate/O w_RegY, w_RegYOutlrsRmvd
 	Duplicate/O w_RegX, w_RegXOutlrsRmvd
@@ -118,14 +145,11 @@ Function HKang_GetOutliers(w_conc, w_time)
 	Make/O/D/N=0 w_RegXOutlrs
 	Make/O/D/N=0 w_timeOutlrs
 
-	Variable v_npntsRemoved = 0
-	Variable/G v_CooksDLimit
-	Variable iloop
-
+	// The CooksD limit for outliers.
 	v_CooksDLimit = 3 * mean(w_CooksD)
 
+	// Find points outside the outlier limit and flag them.
 	For(iloop = 0; iloop < numpnts(w_RegY); iloop += 1)
-
 		If(w_CooksD[iloop] > v_CooksDLimit)
 			w_RegYOutlrsRmvd[iloop] = NaN
 			w_RegXOutlrsRmvd[iloop] = NaN
@@ -140,7 +164,6 @@ Function HKang_GetOutliers(w_conc, w_time)
 
 			v_npntsRemoved += 1
 		EndIf
-
 	EndFor
 
 	Print "Number of possible Outliers: ", v_npntsRemoved
@@ -153,31 +176,37 @@ End
 
 Function HKang_DisplayOutliers(w_conc, w_time)
 	Wave w_conc, w_time
-	
+
 	Wave w_RegY, w_RegX
 	Wave w_RegYOutlrsRmvd, w_RegXOutlrsRmvd
 	Wave w_RegYOutlrs, w_RegXOutlrs, w_timeOutlrs
 	Wave w_CooksD
-	
+
+	// Display CooksD values.
 	Display/K=1 w_cooksD vs w_conc
 	ModifyGraph mode=3; DelayUpdate
 	Label left "Cook's Distance Score"; DelayUpdate
 	Label bottom "Concentration (w_RegX)"; DelayUpdate
 
+	// Display outliers on time series plot.
 	Display/K=1 w_conc vs w_time
 	ModifyGraph rgb=(0,0,0); DelayUpdate
 	AppendToGraph w_RegXOutlrs vs w_timeOutlrs; DelayUpdate
 	ModifyGraph mode(w_RegXOutlrs)=3,marker(w_RegXOutlrs)=8,mrkThick(w_RegXOutlrs)=1; DelayUpdate
-	Legend/C/N=text0/A=MC
+	Legend/C/N=text0/A=MC; DelayUpdate
 	Label left "Concentration";DelayUpdate
-	Label bottom "Date & Time"
+	Label bottom "Date & Time"; DelayUpdate
 
+	// Display outliers on linear regression scatter plot.
 	Display/K=1 w_RegY vs w_RegX
 	ModifyGraph mode=3,rgb=(0,0,0); DelayUpdate
 	AppendToGraph w_RegYOutlrs vs w_RegXOutlrs; DelayUpdate
 	ModifyGraph mode=3,marker(w_RegYOutlrs)=8; DelayUpdate
 	Legend/C/N=text0/A=MC; DelayUpdate
-	Label left "x+1 (w_RegY)";DelayUpdate
+	Label left "x+1 (w_RegY)"; DelayUpdate
 	Label bottom "x (w_RegX)"; DelayUpdate
+
+	// Table of outliers for quick look.
+	Edit/K=1 w_timeOutlrs, w_RegXOutlrs
 
 End
