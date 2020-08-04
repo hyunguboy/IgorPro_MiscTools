@@ -11,7 +11,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //	Calculates the gas phase concentrations of compounds by using the
-//	Clausius-Clapeyron equation.
+//	Clausius-Clapeyron equation. This was originally written to calculate
+//	semivolatile organic compound concentrations for PTRMS calibrations.
+//
+//	Octanone
+//	Decanone
+//
+//
+//
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -54,10 +61,12 @@ End
 //	2.	v_refPressTorr:		Torr
 //	3.	v_ambientPressTorr:	Torr
 //	4.	v_refTempK:			Kelvin
-Function HKang_PlotPPBvsTempK(w_inputValues, v_lowerTempK, v_upperTempK)
+Function HKang_PlotPPBvsTempK(w_inputValues, v_lowerTempC, v_upperTempC)
 	Wave w_inputValues
-	Variable v_lowerTempK, v_upperTempK
+	Variable v_lowerTempC, v_upperTempC
 
+	Variable v_lowerTempK = v_lowerTempC + 273.15
+	Variable v_upperTempK = v_upperTempC + 273.15
 	Variable v_enthalpyVap = w_inputValues[0]
 	Variable v_refPressTorr = w_inputValues[1]
 	Variable v_ambientPressTorr = w_inputValues[2]
@@ -66,41 +75,32 @@ Function HKang_PlotPPBvsTempK(w_inputValues, v_lowerTempK, v_upperTempK)
 	Variable v_plotNumpnts = 300 // Number of points on the generated figure.
 	Variable iloop
 
+	// Waves for the Y and X axes.
 	Make/O/D/N=(v_plotNumpnts) w_X_tempK
 	Make/O/D/N=(v_plotNumpnts) w_Y_ConcPPB
 
 	For(iloop = 0; iloop < v_plotNumpnts; iloop += 1)
-		w_X_tempK[iloop] = v_lowerTempK + iloop * (v_upperTempK - v_lowerTempK)/v_plotNumpnts
+		w_X_tempK[iloop] = v_lowerTempK + iloop * (v_upperTempK - v_lowerTempK)/(v_plotNumpnts - 1)
 
 		v_currentPressTorr = HKang_ClausiusClapeyron(v_enthalpyVap, v_refPressTorr, w_X_tempK[iloop], v_refTempK)
 
 		w_Y_ConcPPB[iloop] = HKang_TorrToPPB(v_currentPressTorr, v_ambientPressTorr)
 	EndFor
 
+	// Celsius wave to make the figure easier to read.
+	Duplicate/O w_X_tempK, w_X_tempC
+	w_X_tempC = w_X_tempK - 273.15
+
 	// Display figure.
-	Display/K=1 w_Y_ConcPPB vs w_X_tempK
+	Display/K=1 w_Y_ConcPPB vs w_X_tempC
 	ModifyGraph standoff=0; DelayUpdate
 	Label left "Concentration (ppb)"; DelayUpdate
-	Label bottom "Temperature (K)"; DelayUpdate
+	Label bottom "Temperature (C)"; DelayUpdate
 	ModifyGraph lsize=2,rgb=(0,0,0); DelayUpdate
+	ModifyGraph log(left)=1; DelayUpdate
 
 End
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+////////////////////////////////////////////////////////////////////////////////
 
 
