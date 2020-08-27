@@ -1,5 +1,15 @@
 ﻿#pragma TextEncoding = "UTF-8"
 #pragma rtGlobals=3		// Use modern global access method and strict wave access.
+#pragma version = 1.0
+
+//	2020 Hyungu Kang, www.hazykinetics.com, hyunguboy@gmail.com
+//
+//	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
+//
+//	Version 1.0 (Released 2020-08-27)
+//	1.	Initial release tested with Igor Pro 8.04.
+
+////////////////////////////////////////////////////////////////////////////////
 
 Function HKang_CoeffOfDetermination(w_dataX, w_dataY, w_modelX, w_modelY)
 	Wave w_dataX, w_dataY, w_modelX, w_modelY
