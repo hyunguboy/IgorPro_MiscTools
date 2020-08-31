@@ -5,6 +5,9 @@
 //
 //	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
 //
+//	Version 1.1 (Released 2020-08-31)
+//	1.	Minor grammar error fixes.
+//
 //	Version 1.0 (Released 2020-06-24)
 //	1.	Initial release tested with Igor Pro 6.37 and 8.04.
 
@@ -83,7 +86,7 @@ Function HKang_GetAvgWithTime(w_conc, w_time, str_startTime, str_endTime)
 		v_concFaverage = faverageXY(w_time, w_conc, v_startTime, v_endTime)
 	EndIf
 
-	Print "Number of NaNs in input range of" + nameofwave(w_conc) + ": ", V_numNans
+	Print "Number of NaNs in input range of " + nameofwave(w_conc) + ": ", V_numNans
 	Print "Mean: ", v_concMean
 	Print "faverage: ", v_concFaverage
 
