@@ -20,3 +20,7 @@ Calculates the average of points within an input time period. This function take
 ## HKang_GetMultipleR2.ipf
 
 Finds the R2 from linear regressions of multiple waves (or matrix) and saves those R2 values into an output wave.
+
+## HKang_VaporPressClausClap.ipf
+
+Calculates the vapor pressure using the Clausius-Clapeyron equation.
