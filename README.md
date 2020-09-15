@@ -23,4 +23,4 @@ Finds the R2 from linear regressions of multiple waves (or matrix) and saves tho
 
 ## HKang_VaporPressClausClap.ipf
 
-Calculates the vapor pressure using the Clausius-Clapeyron equation.
+Calculates the vapor pressure using the Clausius-Clapeyron equation. Requires enthalpy of vaporization and a reference vapor pressure at some temperature.
