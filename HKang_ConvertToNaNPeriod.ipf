@@ -5,6 +5,9 @@
 //
 //	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
 //
+//	Version 1.2 (Released 2020-09-23)
+//	1.	Placed DoAlert notices for when the function is aborting.
+//
 //	Version 1.1 (Released 2020-06-10)
 //	1.	Minor adjustments to code syntax for better consistency.
 //
@@ -21,7 +24,8 @@
 
 //	Converts conventration values to NaN for an input time period in case
 //	there is a reason instrument values need to be removed. The converted points
-//	are those larger than s_startTime and equal or less than s_endTime.
+//	are those equal or larger than s_startTime and equal or less than s_endTime.
+//
 //	Input times need to be in the format of "YYYY-MM-DD HH:MM:SS".
 Function HKang_ConvertToNaNPeriod(w_conc, w_time, str_startTime, str_endTime)
 	Wave w_conc, w_time
@@ -39,7 +43,7 @@ Function HKang_ConvertToNaNPeriod(w_conc, w_time, str_startTime, str_endTime)
 
 	// Check that the time and concentration wave lengths are of the same length.
 	If(numpnts(w_time) != numpnts(w_conc))
-		Print "Aborting: Time and concentration waves have different lengths."
+		DoAlert/T="Aborting" 0, "Aborting: Time and concentration waves have different lengths."
 		Abort "Aborting: Time and concentration waves have different lengths."
 	EndIf
 
@@ -52,19 +56,20 @@ Function HKang_ConvertToNaNPeriod(w_conc, w_time, str_startTime, str_endTime)
 
 	// Check that the end time is larger than the start time.
 	If(v_startTime >= v_endTime)
-		Print "Aborting: End time is not larger than start time."
+		DoAlert/T="Aborting" 0, "Aborting: End time is not larger than start time."
 		Abort "Aborting: End time is not larger than start time."
 	EndIf
 
 	// Convert the concentration points into NaN.
 	For(iloop = 0; iloop < numpnts(w_time); iloop += 1)
-		If(w_time[iloop] > v_startTime && w_time[iloop] <= v_endTime)
+		If(w_time[iloop] >= v_startTime && w_time[iloop] <= v_endTime)
 			w_conc[iloop] = NaN
 
 			v_pointsConverted = v_pointsConverted + 1
 		EndIf
 	EndFor
 
+	// Print 
 	Print "Number of points removed from " + nameofwave(w_conc) + ": ", v_pointsConverted
 
 	SetDataFolder dfr_current
