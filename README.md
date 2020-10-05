@@ -1,5 +1,5 @@
 # IgorPro_MiscTools
-Miscellaneous tools used in the lab.
+Miscellaneous tools used in the lab or to write other functions.
 
 ## HKang_CoeffOfDetermination.ipf
 
