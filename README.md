@@ -23,7 +23,7 @@ Finds the R2 from linear regressions of multiple waves (or matrix) and saves tho
 
 ## HKang_LinearRegressionMethods.ipf
 
-Multiple ways to calculate a linear regression.
+Multiple ways to calculate a linear regression. See inside for references.
 
 ## HKang_VaporPressClausClap.ipf
 
