@@ -6,6 +6,9 @@
 //
 //	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
 //
+//	Version 1.1 (Released 2020-10-08)
+//	1.	Function also displays a figure with the Y-axis in logarithmic form.
+//
 //	Version 1.0 (Released 2020-10-06)
 //	1.	Initial release tested with Igor Pro 8.04.
 
@@ -34,7 +37,7 @@ Function HKang_ChamberResidenceTime(v_volume, v_flowRate, v_initConc, v_modelTim
 		w_modelTimeHour[iloop] = w_modelTimeMin[iloop]/60
 		w_modelConc[iloop] = v_initConc * e^(-v_flushRate * w_modelTimeMin[iloop])
 	EndFor
-	
+
 	Display/K=1 w_modelConc vs w_modelTimeMin
 	AppendToGraph/B=Hour w_modelConc vs w_modelTimeHour
 
