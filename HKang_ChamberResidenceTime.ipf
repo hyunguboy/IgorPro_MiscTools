@@ -51,4 +51,21 @@ Function HKang_ChamberResidenceTime(v_volume, v_flowRate, v_initConc, v_modelTim
 	Label bottom "Flush time (min)"; DelayUpdate
 	Label Hour "Flush time (hour)"; DelayUpdate
 
+	Display/K=1 w_modelConc vs w_modelTimeMin
+	AppendToGraph/B=Hour w_modelConc vs w_modelTimeHour
+
+	ModifyGraph log(left)=1;DelayUpdate
+	ModifyGraph lsize(w_modelConc)=2; DelayUpdate
+	ModifyGraph hideTrace(w_modelConc#1)=2; DelayUpdate
+	ModifyGraph standoff=0; DelayUpdate
+	ModifyGraph margin(bottom)=108; DelayUpdate
+	ModifyGraph freePos(Hour)=50; DelayUpdate
+	ModifyGraph lblPosMode(bottom)=1,lblPosMode(Hour)=1; DelayUpdate
+	ModifyGraph lblMargin(bottom)=70,lblMargin(Hour)=20,lblPos(bottom)=0; DelayUpdate
+	ModifyGraph nticks(Hour)=8; DelayUpdate
+	SetAxis/A left; DelayUpdate
+	Label left "Concentration"; DelayUpdate
+	Label bottom "Flush time (min)"; DelayUpdate
+	Label Hour "Flush time (hour)"; DelayUpdate
+
 End
