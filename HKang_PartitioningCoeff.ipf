@@ -23,7 +23,7 @@
 //	alpha-pinene: 4.75 mmHg, 136 g/mol (Pubchem)
 //	oleic acid: 1.3e-6 mmHg, 282 g/mol (Pubchem)
 //	pinic acid: 9e-4 mmHg, 186 g/mol (Reference below)
-//	pinonic acid: 7e-3, 184 g/mol (Reference below)
+//	pinonic acid: 7e-3 mmHg, 184 g/mol (Reference below)
 //
 //	"Gas chromatographic vapor pressure determination of atmospherically 
 //	relevant oxidation products of β-caryophyllene and α-pinene",
@@ -32,13 +32,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Function HKang_ParitioningCoeff(v_M, v_vapPress, v_maxOA)
+Function HKang_ParitioningCoeff(v_M, v_vapPress, v_minOA, v_maxOA)
 	Variable v_M // molecular molar weight (g mol-1)
 	Variable v_vapPress // vapor pressure at 25C (torr)
+	Variable v_minOA // minimum OA mass for the X-axis (ug m-3)
 	Variable v_maxOA // maximum OA mass for the X-axis (ug m-3)
 
 	Variable iloop
-	Variable v_numpnts = 200 // number of points on the X-axis.
+	Variable v_numpnts = 500 // number of points on the X-axis.
 	Variable v_Cstar // effective saturation concentration (ug m-3)
 	Variable v_Zeta = 1 // activity coefficient
 	Variable v_R = 0.062363 // gas constant (m3 torr K-1 mol-1)
@@ -49,17 +50,18 @@ Function HKang_ParitioningCoeff(v_M, v_vapPress, v_maxOA)
 	// Make waves to be displayed.
 	Make/O/D/N=(v_numpnts) w_CoaLin = NaN
 	Make/O/D/N=(v_numpnts) w_CoaLog = NaN
+
 	Make/O/D/N=(v_numpnts) w_FpLin = NaN
 	Make/O/D/N=(v_numpnts) w_FpLog = NaN
 	Make/O/D/N=(v_numpnts) w_FpGasLin = NaN
 	Make/O/D/N=(v_numpnts) w_FpGasLog = NaN
 
 	For(iloop = 0; iloop < v_numpnts; iloop += 1)
-		w_CoaLin[iloop] = 0.01 + iloop * (v_maxOA - 0.001)/(v_numpnts - 1)
+		w_CoaLin[iloop] = v_minOA + iloop * (v_maxOA - v_minOA)/(v_numpnts - 1)
 		w_FpLin[iloop] = 1/(1+v_Cstar/w_CoaLin[iloop])
 		w_FpGasLin[iloop] = 1 - w_FpLin[iloop]
 
-		w_CoaLog[iloop] = 0.01 + 10^(iloop * (log(v_maxOA + 1))/(v_numpnts - 1)) - 1
+		w_CoaLog[iloop] = 10^(log(v_minOA) + iloop * (log(v_maxOA) - log(v_minOA))/(v_numpnts - 1))
 		w_FpLog[iloop] = 1/(1+v_Cstar/w_CoaLog[iloop])
 		w_FpGasLog[iloop] = 1 - w_FpLog[iloop]		
 	EndFor
