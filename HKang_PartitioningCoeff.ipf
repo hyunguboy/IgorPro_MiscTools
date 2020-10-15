@@ -5,6 +5,12 @@
 //
 //	GNU GPLv3. Please feel free to modify the code as necessary for your needs.
 //
+//	Version 1.1 (Released 2020-10-15)
+//	1.	The points for the X-axis on the log10 plot are now evenly spaced.
+//		Previously, the uneven spacing would cause the curves on the plot
+//		to look jagged.
+//	2.	Error messages have been added for user convenience.
+//
 //	Version 1.0 (Released 2020-10-13)
 //	1.	Initial release tested with Igor Pro 8.04.
 
@@ -44,6 +50,17 @@ Function HKang_ParitioningCoeff(v_M, v_vapPress, v_minOA, v_maxOA)
 	Variable v_Zeta = 1 // activity coefficient
 	Variable v_R = 0.062363 // gas constant (m3 torr K-1 mol-1)
 	Variable v_T = 298 // ambient temperature (K)
+
+	// Error messages.
+	If(v_minOA <=0)
+		Print "Aborting: v_minOA must be a non-zero positive number."
+		Abort "Aborting: v_minOA must be a non-zero positive number."
+	EndIf
+
+	If(v_minOA >= v_maxOA)
+		Print "Aborting: v_maxOA must larger than v_minOA."
+		Abort "Aborting: v_maxOA must larger than v_minOA."
+	EndIf
 
 	v_Cstar = (v_M * 1e6 * v_Zeta * v_vapPress)/(760 * v_R * v_T)
 
