@@ -3,7 +3,7 @@ Miscellaneous tools used in the lab or to write other functions.
 
 ## HKang_ChamberResidenceTime.ipf
 
-Calculates the residence time inside of a chamber with a flow going through it.
+Calculates the residence time inside of a chamber with a flow going through it. First order loss.
 
 ## HKang_CoeffOfDetermination.ipf
 
