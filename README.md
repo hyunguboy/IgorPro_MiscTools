@@ -1,5 +1,5 @@
 # IgorPro_MiscTools
-Miscellaneous tools used in the lab or to write other functions.
+Miscellaneous tools used in the lab or to write other functions. Mostly written with Igor Pro 8.
 
 ## HKang_ChamberResidenceTime.ipf
 
