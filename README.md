@@ -13,7 +13,7 @@ Calculates the R<sup>2</sup> (coefficient of determination) value between 2 inpu
 
 Takes time and concentration waves and designated times and converts the concentrations within those designated times to NaN. 
 
-## HKang_DeleteNaNPoints.ipf
+## HKang_DeleteNaNPoints.ipf 
 
 Deletes NaN points in a wave.
 
