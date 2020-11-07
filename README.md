@@ -11,7 +11,7 @@ Calculates the R<sup>2</sup> (coefficient of determination) value between 2 inpu
 
 ## HKang_ConvertToNaNperiod.ipf
 
-Takes time and concentration waves and designated times and converts the concentrations within those designated times to NaN.
+Takes time and concentration waves and designated times and converts the concentrations within those designated times to NaN. 
 
 ## HKang_DeleteNaNPoints.ipf
 
