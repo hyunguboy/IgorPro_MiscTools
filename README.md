@@ -1,5 +1,5 @@
 # IgorPro_MiscTools
-Miscellaneous tools used in the lab or to write other functions. Mostly written with Igor Pro 8. Should use optimize//.
+Miscellaneous tools used in the lab or to write other functions. Mostly written with Igor Pro 8. Should use optimize.
 
 ## HKang_ChamberResidenceTime.ipf
 
