@@ -1,10 +1,6 @@
 # IgorPro_MiscTools
 Miscellaneous tools used in the lab or to write other functions. Mostly written with Igor Pro 8. Should use optimize.
 
-## HKang_ChamberResidenceTime.ipf
-
-Calculates the residence time inside of a chamber with a flow going through it. First order loss.
-
 ## HKang_CoeffOfDetermination.ipf
 
 Calculates the R<sup>2</sup> (coefficient of determination) value between 2 input waves. Ideally, this function can be used between a model output and measurement values.
