@@ -17,6 +17,7 @@ Deletes NaN points in a wave.
 
 Calculates the average of points within an input time period. This function takes a wave of measurements, its corresponding time wave, and the beginning and end time points. It then outputs the average of the points in the period.
 
+
 ## HKang_GetMultipleR2.ipf
 
 Finds the R2 from linear regressions of multiple waves (or matrix) and saves those R2 values into an output wave.
