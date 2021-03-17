@@ -27,4 +27,4 @@ Multiple ways to calculate a linear regression. See inside for references.
 
 ## HKang_VaporPressClausClap.ipf
 
-Calculates the vapor pressure using the Clausius-Clapeyron equation. Requires enthalpy of vaporization and a reference vapor pressure at some temperature.
+Calculates the vapor pressure using the Clausius-Clapeyron equation. Requires enthalpy of vaporization and a reference vapor pressure at some temperature. 
